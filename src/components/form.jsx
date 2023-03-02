@@ -71,7 +71,7 @@ export default function MainForm(props) {
     <section className="m-48 ">
       <div className="flex text-center  justify-center items-center h-100vh  ">
         <div className="">
-          <h1 className='text-5xl font-bold sm:text-6xl lg:text-5xl '> {toggle ? "Download Mp3" : "Download Mp4"}</h1>
+          <h1 className='text-5xl font-bold sm:text-6xl lg:text-5xl '> {toggle ? "Download Mp3 Audio" : "Download Mp4 Video"}</h1>
           <p className="text-xl lg:text:xl">Start download by pasting the youtube link below.</p>
           <div className="">
             {" "}
