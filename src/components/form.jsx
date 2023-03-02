@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Image from "next/image";
+import {Button,Spinner } from 'react-bootstrap';
 
 export default function MainForm(props) {
   const [toggle, setToggle] = useState(true);
@@ -43,7 +44,7 @@ export default function MainForm(props) {
           method: "GET",
           headers: {
             "X-RapidAPI-Key":
-              "8b59088f1dmshfd0798dfab4bbbap1c5999jsn3c5e578fc733",
+            "8b59088f1dmshfd0798dfab4bbbap1c5999jsn3c5e578fc733",
             "X-RapidAPI-Host": "youtube-video-download-info.p.rapidapi.com",
           },
         };
@@ -67,62 +68,68 @@ export default function MainForm(props) {
   };
 
   return (
-    <div className="mb-11 ">
-      <h1> {toggle ? "Download Mp3" : "Download Mp4"}</h1>
-      <p className="">Start download by pasting the youtube id below.</p>
-      <div className="ml-12">
-        {" "}
-        <button
-          onClick={() => {
-            setToggle(!toggle);
-            setTitle("");
-            setLink("");
-            setStatus(true);
-            setError("");
-          }}
-        >
-          Toggle {toggle ? "MP4" : "MP3"}
-        </button>
-      </div>
-
-      <form onSubmit={download}>
-        <div>
-          <p className="">{title}</p>
-          {imgsrc.length > 0 && (
-            <Image src={imgsrc} width={200} height={300} alt={title} />
-          )}
-          <input
-            type="text"
-            className=""
-            placeholder="Enter Youtube Url"
-            onChange={(e) => setUrl(e.target.value)}
-            value={url}
-          />
-          <p>{error}</p>
-        </div>
+    <section className="m-48 ">
+      <div className="flex text-center  justify-center items-center h-100vh  ">
         <div className="">
-          {status ? (
-            <button className="" type="submit">
-              Convert
-            </button>
-          ) : (
-            <button
-              className=""
-              onClick={(e) => {
-                e.preventDefault();
-                window.open(link);
-                setStatus(true);
-                setUrl("");
-                setLink("");
+          <h1 className='text-5xl font-bold sm:text-6xl lg:text-5xl '> {toggle ? "Download Mp3" : "Download Mp4"}</h1>
+          <p className="text-xl lg:text:xl">Start download by pasting the youtube link below.</p>
+          <div className="">
+            {" "}
+            <Button variant="outline-dark"
+              onClick={() => {
+                setToggle(!toggle);
                 setTitle("");
-                setImgSrc("");
+                setLink("");
+                setStatus(true);
+                setError("");
+                setImgSrc("")
               }}
             >
-              Download
-            </button>
-          )}
+              Toggle {toggle ? "MP4" : "MP3"}
+            </Button>
+          </div>
+
+          <form onSubmit={download}>
+            <div className="">
+              <p className="font-bold text-3xl lg:text-2xl">{title}</p>
+              
+              <label htmfor='link' className='mr-2 text-xl lg:text-3xl'>Please enter youtube url: </label>
+              <input
+              
+              id='link'
+                type="text"
+                className="text-xl placeholder-opacity-75 placeholder-gray-900 border-2  border-gray-600 rounded-md lg:text-2xl"
+                placeholder="https://www.youtube......"
+                onChange={(e) => setUrl(e.target.value)}
+                value={url}
+              />
+              <p className='text-red-800 text-xl'>{error}</p>
+            </div>
+            <div className="">
+              {status ? (
+               < Button variant="outline-dark" className="" type="submit" size='lg'>
+                  Convert
+                </Button>
+              ) : (
+                <Button  variant="outline-dark" size='lg'
+                  className=""
+                  onClick={(e) => {
+                    e.preventDefault();
+                    window.open(link);
+                    setStatus(true);
+                    setUrl("");
+                    setLink("");
+                    setTitle("");
+                    setImgSrc("");
+                  }}
+                >
+                  Download
+                </Button>
+              )}
+            </div>
+          </form>
         </div>
-      </form>
-    </div>
+      </div>
+    </section>
   );
 }
