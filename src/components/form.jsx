@@ -1,24 +1,27 @@
-import { useState } from "react";
-import Image from "next/image";
+import { useState,useEffect } from "react";
+
 import {Button,Spinner } from 'react-bootstrap';
 
-export default function MainForm(props) {
+export default function MainForm() {
   const [toggle, setToggle] = useState(true);
   const [title, setTitle] = useState("");
-  const [link, setLink] = useState("");
-  const [imgsrc, setImgSrc] = useState("");
+  const [link, setLink] = useState('');
   const [status, setStatus] = useState(true);
+  const [loading,setLoading] = useState(false)
   const [error, setError] = useState("");
-
   const [url, setUrl] = useState("");
+
   const regExp = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|\?v=)([^#&?]*).*/;
   const match = url.match(regExp);
+
+  
 
   const download = async (e) => {
     e.preventDefault();
 
     if (match && match[2]) {
       if (toggle === true) {
+        setLoading(true)
         const options = {
           method: "GET",
           headers: {
@@ -32,14 +35,15 @@ export default function MainForm(props) {
           options
         );
         const data = await res.json();
-        data.status === "ok" && setStatus(false);
+        
         setTitle(data.title);
         setLink(data.link);
-
+        // data.status === 'ok' && setStatus(false);
+       
         data.status === "fail"
-          ? setError("Enter a valid youtube url")
+          ? setError(data.msg) && setStatus(true)
           : setError("");
-      } else {
+      } else if(toggle===false){
         const options = {
           method: "GET",
           headers: {
@@ -54,24 +58,45 @@ export default function MainForm(props) {
           options
         );
         const data = await res.json();
+      try{
         data.status === "ok" && setStatus(false);
+      
         setTitle(data.title);
         setLink(data.link[17][0]);
-        setImgSrc(data.thumb);
-        data.status === "fail"
+      
+       
+        
+        data.status === 'fail'
           ? setError("Enter a valid youtube url")
           : setError("");
+      }catch(err){
+        setError(err)
+      }
+      
       }
     } else {
       setError("Enter a valid youtube url");
     }
   };
+  
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if(toggle && loading ){
+        setStatus(false);
+        setLoading(false)
+      }
+      
+    }, 5000);
+
+    return () => clearTimeout(timeoutId);
+  }, [loading,toggle]);
+
 
   return (
     <section className="m-48 ">
-      <div className="flex text-center  justify-center items-center h-100vh  ">
+      <div className="flex text-center  justify-center items-center h-100vh sm:h-80vh ">
         <div className="">
-          <h1 className='text-5xl font-bold sm:text-6xl lg:text-5xl '> {toggle ? "Download Mp3 Audio" : "Download Mp4 Video"}</h1>
+          <h1 className='text-5xl text-white font-bold sm:text-6xl lg:text-5xl '> {toggle ? "Download Mp3" : "Download Mp4"}</h1>
           <p className="text-xl lg:text:xl">Start download by pasting the youtube link below.</p>
           <div className="">
             {" "}
@@ -82,7 +107,7 @@ export default function MainForm(props) {
                 setLink("");
                 setStatus(true);
                 setError("");
-                setImgSrc("")
+               setUrl('')
               }}
             >
               Toggle {toggle ? "MP4" : "MP3"}
@@ -93,12 +118,12 @@ export default function MainForm(props) {
             <div className="">
               <p className="font-bold text-3xl lg:text-2xl">{title}</p>
               
-              <label htmfor='link' className='mr-2 text-xl lg:text-3xl'>Please enter youtube url: </label>
+              
               <input
               
-              id='link'
+             
                 type="text"
-                className="text-xl placeholder-opacity-75 placeholder-gray-900 border-2  border-gray-600 rounded-md lg:text-2xl"
+                className="text-xl placeholder-opacity-75 placeholder-white  border-2 border-black rounded-md lg:text-2xl"
                 placeholder="https://www.youtube......"
                 onChange={(e) => setUrl(e.target.value)}
                 value={url}
@@ -106,13 +131,13 @@ export default function MainForm(props) {
               <p className='text-red-800 text-xl'>{error}</p>
             </div>
             <div className="">
-              {status ? (
-               < Button variant="outline-dark" className="" type="submit" size='lg'>
+               
+               <Button variant="outline-dark" className="" type="submit" size='lg'    >
                   Convert
                 </Button>
-              ) : (
-                <Button  variant="outline-dark" size='lg'
-                  className=""
+              {loading && <Spinner animation="border" varient='success' className='ml-12' />}
+                {status === false && error==='' && <Button  variant="outline-dark" size='lg'
+                  className="ml-12"
                   onClick={(e) => {
                     e.preventDefault();
                     window.open(link);
@@ -120,12 +145,12 @@ export default function MainForm(props) {
                     setUrl("");
                     setLink("");
                     setTitle("");
-                    setImgSrc("");
+                  
                   }}
                 >
                   Download
-                </Button>
-              )}
+                </Button>}  
+              
             </div>
           </form>
         </div>
