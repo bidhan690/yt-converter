@@ -32,12 +32,15 @@ export default function MainForm(props) {
           options
         );
         const data = await res.json();
-        data.status === "ok" && setStatus(false);
+         
+       
         setTitle(data.title);
         setLink(data.link);
+       data.status === 'ok'  &&  setStatus(false);
+      
 
         data.status === "fail"
-          ? setError("Enter a valid youtube url")
+          ? setError("Enter a valid youtube url") && setStatus(true)
           : setError("");
       } else {
         const options = {
@@ -54,11 +57,15 @@ export default function MainForm(props) {
           options
         );
         const data = await res.json();
-        data.status === "ok" && setStatus(false);
+      
+       data.status === "ok" && setStatus(false);
+      
         setTitle(data.title);
         setLink(data.link[17][0]);
-        setImgSrc(data.thumb);
-        data.status === "fail"
+      
+       
+        
+        data.status === 'fail'
           ? setError("Enter a valid youtube url")
           : setError("");
       }
@@ -82,7 +89,7 @@ export default function MainForm(props) {
                 setLink("");
                 setStatus(true);
                 setError("");
-                setImgSrc("")
+               setUrl('')
               }}
             >
               Toggle {toggle ? "MP4" : "MP3"}
@@ -106,13 +113,13 @@ export default function MainForm(props) {
               <p className='text-red-800 text-xl'>{error}</p>
             </div>
             <div className="">
-              {status ? (
-               < Button variant="outline-dark" className="" type="submit" size='lg'>
+               
+               <Button variant="outline-dark" className="" type="submit" size='lg'   >
                   Convert
                 </Button>
-              ) : (
-                <Button  variant="outline-dark" size='lg'
-                  className=""
+              
+                {status === false && error === '' && <Button  variant="outline-dark" size='lg'
+                  className="ml-12"
                   onClick={(e) => {
                     e.preventDefault();
                     window.open(link);
@@ -124,8 +131,8 @@ export default function MainForm(props) {
                   }}
                 >
                   Download
-                </Button>
-              )}
+                </Button>}  
+              
             </div>
           </form>
         </div>
